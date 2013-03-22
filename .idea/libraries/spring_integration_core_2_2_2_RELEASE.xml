@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="spring-integration-core-2.2.2.RELEASE">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/artifacts-23/filestore/org.springframework.integration/spring-integration-core/2.2.2.RELEASE/jar/e0306b393f415fb0e78a3590d3bf345b1c808889/spring-integration-core-2.2.2.RELEASE.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/artifacts-23/filestore/org.springframework.integration/spring-integration-core/2.2.2.RELEASE/source/5b122c54f37c867b9a311c3a498148da8552fc74/spring-integration-core-2.2.2.RELEASE-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
