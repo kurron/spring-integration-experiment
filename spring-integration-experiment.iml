@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="Spring" name="Spring">
+      <configuration>
+        <fileset id="fileset1" name="Hello Context" removed="false">
+          <file>file://$MODULE_DIR$/src/main/resources/META-INF/spring/integration/hello-context.xml</file>
+        </fileset>
+      </configuration>
+    </facet>
+  </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
@@ -31,6 +40,7 @@
     <orderEntry type="library" scope="TEST" name="spring-test-3.2.2.RELEASE" level="project" />
     <orderEntry type="library" scope="TEST" name="junit-dep-4.10" level="project" />
     <orderEntry type="library" exported="" name="spring-expression-3.2.2.RELEASE" level="project" />
+    <orderEntry type="library" name="spring-integration-stream-2.2.2.RELEASE" level="project" />
   </component>
 </module>
 
