@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/integration"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:int-stream="http://www.springframework.org/schema/integration/stream"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                                 http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+                                 http://www.springframework.org/schema/integration/stream http://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd">
+
+    <!-- messages sent to the messageChannel get directly routed to the baked-in stdout channel adapter (CharacterStreamWritingMessageHandler)-->
+    <channel id="messageChannel"/>
+    <!-- the gateway eliminates some of the steps needed to send a message to a channel and further decouples your handling logic from the framework -->
+    <gateway service-interface="org.kurron.hello.Greeter" default-request-channel="messageChannel"/>
+    <int-stream:stdout-channel-adapter channel="messageChannel" append-newline="true"/>
+</beans:beans>
