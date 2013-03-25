@@ -20,6 +20,8 @@
     An "outbound-channel-adapter" element can also connect a MessageChannel to any POJO consumer method that should be
     invoked with the payload of Messages sent to that channel.
     -->
+
+    <!-- The flow is console to channel to rabbit template to rabbit to rabbit consumer to console -->
     <logging-channel-adapter id="logger" level="DEBUG"/>
     <wire-tap pattern="*Rabbit" order="3" channel="logger"/>
 
