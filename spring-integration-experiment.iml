@@ -41,6 +41,10 @@
     <orderEntry type="library" scope="TEST" name="junit-dep-4.10" level="project" />
     <orderEntry type="library" exported="" name="spring-expression-3.2.2.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="spring-integration-stream-2.2.2.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="amqp-client-2.8.4" level="project" />
+    <orderEntry type="library" exported="" name="spring-rabbit-1.1.4.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="spring-amqp-1.1.4.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="spring-integration-amqp-2.2.2.RELEASE" level="project" />
   </component>
 </module>
 

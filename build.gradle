@@ -34,6 +34,7 @@ ext {
 dependencies {
     compile "org.springframework.integration:spring-integration-core:${springIntegrationVersion}"
     compile "org.springframework.integration:spring-integration-stream:${springIntegrationVersion}"
+    compile "org.springframework.integration:spring-integration-amqp:${springIntegrationVersion}"
     compile "org.springframework:spring-context:${springFrameworkVersion}"
 
     /*

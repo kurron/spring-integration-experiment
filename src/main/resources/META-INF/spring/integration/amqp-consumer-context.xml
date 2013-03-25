@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/integration"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:int-stream="http://www.springframework.org/schema/integration/stream"
+             xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+             xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                                 http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+                                 http://www.springframework.org/schema/integration/stream http://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd
+                                 http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
+                                 http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+
+    <!-- messages sent to the messageChannel get queued routed to the baked-in stdout channel adapter (CharacterStreamWritingMessageHandler)-->
+
+    <logging-channel-adapter id="logger" level="DEBUG"/>
+    <wire-tap pattern="*Rabbit" order="3" channel="logger"/>
+
+    <!-- From STDIN To RabbitMQ -->
+    <int-stream:stdin-channel-adapter id="consoleIn" channel="toRabbit">
+        <poller fixed-delay="1000" max-messages-per-poll="1" />
+    </int-stream:stdin-channel-adapter>
+
+    <channel id="toRabbit" />
+
+    <int-amqp:outbound-channel-adapter channel="toRabbit" amqp-template="amqpTemplate" exchange-name="si.test.exchange" routing-key="si.test.binding" />
+
+    <!-- From RabbitMQ To STDOUT -->
+    <int-amqp:inbound-channel-adapter channel="fromRabbit" queue-names="si.test.queue" connection-factory="connectionFactory" />
+
+    <channel id="fromRabbit"/>
+
+    <int-stream:stdout-channel-adapter id="consoleOut" channel="fromRabbit" append-newline="true" />
+
+    <!-- Infrastructure -->
+    <rabbit:connection-factory id="connectionFactory" />
+
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" />
+
+    <rabbit:admin connection-factory="connectionFactory" />
+
+    <rabbit:queue name="si.test.queue" />
+
+    <rabbit:direct-exchange name="si.test.exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="si.test.queue" key="si.test.binding" />
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+</beans:beans>
