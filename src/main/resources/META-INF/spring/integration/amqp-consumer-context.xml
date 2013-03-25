@@ -13,6 +13,13 @@
 
     <!-- messages sent to the messageChannel get queued routed to the baked-in stdout channel adapter (CharacterStreamWritingMessageHandler)-->
 
+    <!--
+    A Channel Adapter is a Message Endpoint that enables connecting a single sender or receiver to a Message Channel.
+    An "inbound-channel-adapter" element can invoke any method on a Spring-managed Object and send a non-null return value
+    to a MessageChannel after converting it to a Message.
+    An "outbound-channel-adapter" element can also connect a MessageChannel to any POJO consumer method that should be
+    invoked with the payload of Messages sent to that channel.
+    -->
     <logging-channel-adapter id="logger" level="DEBUG"/>
     <wire-tap pattern="*Rabbit" order="3" channel="logger"/>
 
