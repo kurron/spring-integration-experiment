@@ -10,13 +10,10 @@
     <!-- messages sent to the messageChannel get directly routed to the baked-in stdout channel adapter (CharacterStreamWritingMessageHandler)-->
 
     <logging-channel-adapter id="logger" level="DEBUG"/>
+    <wire-tap pattern="messageChannel" order="3" channel="logger"/>
 
     <!-- channel is direct which has only-one-consumer-gets-the-message semantics -->
-    <channel id="messageChannel">
-        <interceptors>
-            <wire-tap channel="logger"/>
-        </interceptors>
-    </channel>
+    <channel id="messageChannel"/>
 
     <!-- the gateway eliminates some of the steps needed to send a message to a channel and further decouples your handling logic from the framework -->
     <gateway service-interface="org.kurron.hello.Greeter" default-request-channel="messageChannel"/>
