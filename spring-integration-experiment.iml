@@ -40,7 +40,7 @@
     <orderEntry type="library" scope="TEST" name="spring-test-3.2.2.RELEASE" level="project" />
     <orderEntry type="library" scope="TEST" name="junit-dep-4.10" level="project" />
     <orderEntry type="library" exported="" name="spring-expression-3.2.2.RELEASE" level="project" />
-    <orderEntry type="library" name="spring-integration-stream-2.2.2.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="spring-integration-stream-2.2.2.RELEASE" level="project" />
   </component>
 </module>
 

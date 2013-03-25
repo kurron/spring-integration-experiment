@@ -18,7 +18,7 @@
 
     <logger name="org.apache" level="WARN"/>
 
-    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.springframework.integration.handler.LoggingHandler" level="ALL"/>
 
     <logger name="org.springframework.integration" level="WARN"/>
 
