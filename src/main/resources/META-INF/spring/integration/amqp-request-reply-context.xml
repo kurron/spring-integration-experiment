@@ -23,16 +23,30 @@
 
     <!-- The flow is console to channel to rabbit template to rabbit to rabbit consumer to console -->
     <logging-channel-adapter id="logger" level="DEBUG"/>
+<!--
     <wire-tap pattern="*Rabbit" order="3" channel="logger"/>
+-->
+    <logging-channel-adapter id="loggingChannel" log-full-message="true" level="INFO" />
 
     <!-- From STDIN To RabbitMQ -->
     <int-stream:stdin-channel-adapter id="consoleIn" channel="toRabbit">
         <poller fixed-delay="1000" max-messages-per-poll="1" />
     </int-stream:stdin-channel-adapter>
 
-    <channel id="toRabbit" />
+    <int-stream:stdout-channel-adapter id="rabbitRepliesConsole" channel="rabbitReplies" append-newline="true" />
 
-    <int-amqp:outbound-channel-adapter channel="toRabbit" amqp-template="amqpTemplate" exchange-name="si.test.exchange" routing-key="si.test.binding" />
+    <channel id="toRabbit" />
+    <channel id="rabbitReplies">
+        <interceptors>
+            <wire-tap channel="loggingChannel" />
+        </interceptors>
+    </channel>
+
+    <int-amqp:outbound-channel-adapter channel="toRabbit"
+                                       amqp-template="amqpTemplate"
+                                       exchange-name="si.test.exchange"
+                                       routing-key="si.test.binding"
+                                       return-channel="rabbitReplies"/>
 
     <!-- From RabbitMQ To STDOUT -->
     <int-amqp:inbound-channel-adapter channel="fromRabbit" queue-names="si.test.queue" connection-factory="connectionFactory" />
@@ -42,7 +56,7 @@
     <int-stream:stdout-channel-adapter id="consoleOut" channel="fromRabbit" append-newline="true" />
 
     <!-- Infrastructure -->
-    <rabbit:connection-factory id="connectionFactory" />
+    <rabbit:connection-factory id="connectionFactory" publisher-returns="true" />
 
     <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" />
 
