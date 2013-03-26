@@ -2,16 +2,14 @@
 <beans:beans xmlns="http://www.springframework.org/schema/integration"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:beans="http://www.springframework.org/schema/beans"
-             xmlns:int-stream="http://www.springframework.org/schema/integration/stream"
              xmlns:rabbit="http://www.springframework.org/schema/rabbit"
              xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
              xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                                  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
-                                 http://www.springframework.org/schema/integration/stream http://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd
                                  http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
                                  http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
 
-    <!-- from console to request channel to gateway to RabbitMQ to reply channel to console -->
+    <!-- from automated publisher to request channel to gateway to RabbitMQ to reply channel back to publisher (blocking call) -->
     <channel id="toRabbit"/>
     <channel id="rabbitReply"/>
     <beans:bean id="automatedPublisher" class="org.kurron.hello.Publisher" lazy-init="false">
@@ -33,7 +31,8 @@
                               request-channel="fromRabbit"
                               queue-names="si.test.queue"
                               connection-factory="connectionFactory"
-                              error-handler="errorHandler"/>
+                              error-handler="errorHandler"
+                              concurrent-consumers="5"/>
     <service-activator id="pingServiceActivator"
                        input-channel="fromRabbit"
                        requires-reply="true">
