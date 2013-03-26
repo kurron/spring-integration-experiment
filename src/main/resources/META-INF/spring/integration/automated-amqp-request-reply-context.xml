@@ -12,17 +12,20 @@
                                  http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
 
     <!-- from console to request channel to gateway to RabbitMQ to reply channel to console -->
-    <int-stream:stdin-channel-adapter id="consoleIn" channel="toRabbit">
-        <poller fixed-delay="1000" max-messages-per-poll="1" />
-    </int-stream:stdin-channel-adapter>
-    <channel id="toRabbit" />
+    <channel id="toRabbit"/>
+    <channel id="rabbitReply"/>
+    <beans:bean id="automatedPublisher" class="org.kurron.hello.Publisher" lazy-init="false">
+        <beans:constructor-arg>
+            <gateway service-interface="org.kurron.hello.PublishingService" default-request-channel="toRabbit" default-reply-channel="rabbitReply">
+                <method name="publish"/>
+            </gateway>
+        </beans:constructor-arg>
+    </beans:bean>
     <int-amqp:outbound-gateway id="outboundGateway"
                                request-channel="toRabbit"
                                exchange-name="si.test.exchange"
                                routing-key="si.test.binding"
                                reply-channel="rabbitReply"/>
-    <channel id="rabbitReply"/>
-    <int-stream:stderr-channel-adapter channel="rabbitReply" append-newline="true"/>
 
     <!-- from RabbitMQ to channel to service -->
     <channel id="fromRabbit"/>

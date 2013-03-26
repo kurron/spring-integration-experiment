@@ -13,9 +13,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class AutomatedAmqpRequestReplyDriver
 {
 
-    public static void main( final String[] args )
+    public static void main( final String[] args ) throws InterruptedException
     {
         final AbstractApplicationContext context = new ClassPathXmlApplicationContext( "/META-INF/spring/integration/automated-amqp-request-reply-context.xml", AutomatedAmqpRequestReplyDriver.class );
+        final Publisher bean = context.getBean( "automatedPublisher", Publisher.class );
+        bean.go();
         context.registerShutdownHook();
     }
 }

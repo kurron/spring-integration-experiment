@@ -14,7 +14,7 @@ public class EchoService
     @ServiceActivator
     public String echo( final String message )
     {
-        System.out.println( "Processing " + message );
+        System.out.println( "Instance" + System.identityHashCode( this ) + " processing " + message );
         return "Just heard: " + message;
     }
 }
