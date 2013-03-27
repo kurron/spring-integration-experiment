@@ -10,4 +10,5 @@ package org.kurron.hello;
 public interface PublishingService
 {
     ResponseObject publish( final RequestObject request );
+    byte[] publishBytes( final byte[] buffer );
 }

@@ -15,7 +15,7 @@
     <beans:bean id="automatedPublisher" class="org.kurron.hello.Publisher" lazy-init="false">
         <beans:constructor-arg>
             <gateway service-interface="org.kurron.hello.PublishingService" default-request-channel="toRabbit" default-reply-channel="rabbitReply">
-                <method name="publish"/>
+                <method name="publishBytes"/>
             </gateway>
         </beans:constructor-arg>
     </beans:bean>
@@ -23,7 +23,7 @@
                                request-channel="toRabbit"
                                exchange-name="si.test.exchange"
                                routing-key="si.test.binding"
-                               reply-channel="rabbitReply" />
+                               reply-channel="rabbitReply"/>
 
     <!-- from RabbitMQ to channel to service -->
     <channel id="fromRabbit"/>
@@ -32,16 +32,14 @@
                               queue-names="si.test.queue"
                               connection-factory="connectionFactory"
                               error-handler="errorHandler"
-                              concurrent-consumers="1"
-                              message-converter="messageConverter"/>
+                              concurrent-consumers="1"/>
     <service-activator id="pingServiceActivator"
                        input-channel="fromRabbit"
                        requires-reply="true">
-        <beans:bean class="org.kurron.hello.EchoService"/>
+        <beans:bean class="org.kurron.hello.ImageService"/>
     </service-activator>
 
     <!-- Infrastructure -->
-    <beans:bean id="messageConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter"/>
     <beans:bean id="errorHandler" class="org.kurron.hello.SimpleErrorHandler"/>
     <rabbit:connection-factory id="connectionFactory"/>
     <message-history/>
@@ -53,7 +51,7 @@
          unless you set the converter on the AMQP template.  This might be ok if you always user JSON but what if you want to do
          both JSON and XML?  Do you need a separate template for each format?
     -->
-    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" message-converter="messageConverter"/>
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory"/>
     <rabbit:admin connection-factory="connectionFactory" />
     <rabbit:queue name="si.test.queue" />
     <rabbit:direct-exchange name="si.test.exchange">
