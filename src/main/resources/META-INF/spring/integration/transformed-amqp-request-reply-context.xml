@@ -10,22 +10,20 @@
                                  http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
 
     <!-- from automated publisher to request channel to gateway to RabbitMQ to reply channel back to publisher (blocking call) -->
-    <channel id="toTransformer"/>
     <channel id="toRabbit"/>
     <channel id="rabbitReply"/>
     <beans:bean id="automatedPublisher" class="org.kurron.hello.Publisher" lazy-init="false">
         <beans:constructor-arg>
-            <gateway service-interface="org.kurron.hello.PublishingService" default-request-channel="toTransformer" default-reply-channel="rabbitReply">
+            <gateway service-interface="org.kurron.hello.PublishingService" default-request-channel="toRabbit" default-reply-channel="rabbitReply">
                 <method name="publish"/>
             </gateway>
         </beans:constructor-arg>
     </beans:bean>
-    <object-to-json-transformer input-channel="toTransformer" output-channel="toRabbit"/>
     <int-amqp:outbound-gateway id="outboundGateway"
                                request-channel="toRabbit"
                                exchange-name="si.test.exchange"
                                routing-key="si.test.binding"
-                               reply-channel="rabbitReply"/>
+                               reply-channel="rabbitReply" />
 
     <!-- from RabbitMQ to channel to service -->
     <channel id="fromRabbit"/>
@@ -34,7 +32,8 @@
                               queue-names="si.test.queue"
                               connection-factory="connectionFactory"
                               error-handler="errorHandler"
-                              concurrent-consumers="5"/>
+                              concurrent-consumers="1"
+                              message-converter="messageConverter"/>
     <service-activator id="pingServiceActivator"
                        input-channel="fromRabbit"
                        requires-reply="true">
@@ -42,9 +41,10 @@
     </service-activator>
 
     <!-- Infrastructure -->
+    <beans:bean id="messageConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter"/>
     <beans:bean id="errorHandler" class="org.kurron.hello.SimpleErrorHandler"/>
     <rabbit:connection-factory id="connectionFactory"/>
-    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" />
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" message-converter="messageConverter"/>
     <rabbit:admin connection-factory="connectionFactory" />
     <rabbit:queue name="si.test.queue" />
     <rabbit:direct-exchange name="si.test.exchange">

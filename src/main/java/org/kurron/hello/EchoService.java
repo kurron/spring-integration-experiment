@@ -12,9 +12,9 @@ import org.springframework.integration.annotation.ServiceActivator;
 public class EchoService
 {
     @ServiceActivator
-    public String echo( final String message )
+    public String echo( final RequestObject request )
     {
-        System.out.println( "Instance" + System.identityHashCode( this ) + " processing " + message );
-        return "Just heard: " + message;
+        System.out.println( "Instance" + System.identityHashCode( this ) + " processing " + request.getMessage() );
+        return "Just heard: " + request.getMessage();
     }
 }
