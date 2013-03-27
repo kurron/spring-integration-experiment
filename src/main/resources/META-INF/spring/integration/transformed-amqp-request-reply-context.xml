@@ -44,6 +44,7 @@
     <beans:bean id="messageConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter"/>
     <beans:bean id="errorHandler" class="org.kurron.hello.SimpleErrorHandler"/>
     <rabbit:connection-factory id="connectionFactory"/>
+    <message-history/>
 
     <!-- This is a bit strange but you have to set your JSON message converter on the AMQP template that the outbound gateway uses or
          it won't properly set the message's content type correctly. Instead of application/json you get text/plain. I find this odd because
