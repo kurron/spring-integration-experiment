@@ -45,6 +45,8 @@
     <orderEntry type="library" exported="" name="spring-rabbit-1.1.4.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="spring-amqp-1.1.4.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="spring-integration-amqp-2.2.2.RELEASE" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="jackson-core-asl-1.9.9" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="jackson-mapper-asl-1.9.9" level="project" />
   </component>
 </module>
 
