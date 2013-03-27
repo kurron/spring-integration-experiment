@@ -44,6 +44,14 @@
     <beans:bean id="messageConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter"/>
     <beans:bean id="errorHandler" class="org.kurron.hello.SimpleErrorHandler"/>
     <rabbit:connection-factory id="connectionFactory"/>
+
+    <!-- This is a bit strange but you have to set your JSON message converter on the AMQP template that the outbound gateway uses or
+         it won't properly set the message's content type correctly. Instead of application/json you get text/plain. I find this odd because
+         you can set a message converter on the inbound gateway but not the outbound one.  Using a JSON transformer in the publishing
+         flow does what we expect right up until publication to AMQP.  At that point, things get messed up and text/plain is used
+         unless you set the converter on the AMQP template.  This might be ok if you always user JSON but what if you want to do
+         both JSON and XML?  Do you need a separate template for each format?
+    -->
     <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" message-converter="messageConverter"/>
     <rabbit:admin connection-factory="connectionFactory" />
     <rabbit:queue name="si.test.queue" />

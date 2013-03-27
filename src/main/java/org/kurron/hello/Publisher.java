@@ -25,7 +25,8 @@ public class Publisher
         {
             final RequestObject request = new RequestObject();
             request.setMessage( Integer.toHexString( theRandom.nextInt( Integer.MAX_VALUE ) ).toUpperCase() );
-            final String response = theService.publish( request );
+            System.out.println( "To AMQP: " + request );
+            final ResponseObject response = theService.publish( request );
             System.out.println( "From AMQP: " + response );
             Thread.sleep( theRandom.nextInt( 1000 ) );
         }

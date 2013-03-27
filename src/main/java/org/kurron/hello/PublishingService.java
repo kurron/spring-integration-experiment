@@ -9,5 +9,5 @@ package org.kurron.hello;
  */
 public interface PublishingService
 {
-    String publish( final RequestObject request );
+    ResponseObject publish( final RequestObject request );
 }
