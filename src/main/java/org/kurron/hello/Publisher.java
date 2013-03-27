@@ -26,7 +26,7 @@ public class Publisher
             final String message = Integer.toHexString( theRandom.nextInt( Integer.MAX_VALUE ) ).toUpperCase();
             //System.out.println( "Publishing " + message );
             final String response = theService.publish( message );
-            System.out.println( "Just heard: " + response );
+            System.out.println( "From AMQP: " + response );
             Thread.sleep( theRandom.nextInt( 1000 ) );
         }
     }

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/integration"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+             xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                                 http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+                                 http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
+                                 http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
+
+    <!-- from automated publisher to request channel to gateway to RabbitMQ to reply channel back to publisher (blocking call) -->
+    <channel id="toRabbit"/>
+    <channel id="rabbitReply"/>
+    <beans:bean id="automatedPublisher" class="org.kurron.hello.Publisher" lazy-init="false">
+        <beans:constructor-arg>
+            <gateway service-interface="org.kurron.hello.PublishingService" default-request-channel="toRabbit" default-reply-channel="rabbitReply">
+                <method name="publish"/>
+            </gateway>
+        </beans:constructor-arg>
+    </beans:bean>
+    <int-amqp:outbound-gateway id="outboundGateway"
+                               request-channel="toRabbit"
+                               exchange-name="si.test.exchange"
+                               routing-key="si.test.binding"
+                               reply-channel="rabbitReply"/>
+
+    <!-- from RabbitMQ to channel to service -->
+    <channel id="fromRabbit"/>
+    <int-amqp:inbound-gateway id="inboundGateway"
+                              request-channel="fromRabbit"
+                              queue-names="si.test.queue"
+                              connection-factory="connectionFactory"
+                              error-handler="errorHandler"
+                              concurrent-consumers="5"/>
+    <service-activator id="pingServiceActivator"
+                       input-channel="fromRabbit"
+                       requires-reply="true">
+        <beans:bean class="org.kurron.hello.EchoService"/>
+    </service-activator>
+
+    <!-- Infrastructure -->
+    <beans:bean id="errorHandler" class="org.kurron.hello.SimpleErrorHandler"/>
+    <rabbit:connection-factory id="connectionFactory"/>
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" />
+    <rabbit:admin connection-factory="connectionFactory" />
+    <rabbit:queue name="si.test.queue" />
+    <rabbit:direct-exchange name="si.test.exchange">
+        <rabbit:bindings>
+            <rabbit:binding queue="si.test.queue" key="si.test.binding" />
+        </rabbit:bindings>
+    </rabbit:direct-exchange>
+</beans:beans>
