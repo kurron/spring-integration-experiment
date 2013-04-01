@@ -34,7 +34,6 @@
                               connection-factory="connectionFactory"
                               error-handler="errorHandler"
                               concurrent-consumers="1"
-                              message-converter="messageConverter"
                               mapped-request-headers="*"/>
     <service-activator id="pingServiceActivator"
                        input-channel="fromRabbit"
@@ -43,21 +42,14 @@
     </service-activator>
 
     <!-- Infrastructure -->
-    <beans:bean id="messageConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter"/>
     <beans:bean id="errorHandler" class="org.kurron.hello.SimpleErrorHandler"/>
     <rabbit:connection-factory id="connectionFactory"/>
+<!-- enabling message history causes a problem. Something to do with unexpected types. -->
 <!--
     <message-history/>
 -->
 
-    <!-- This is a bit strange but you have to set your JSON message converter on the AMQP template that the outbound gateway uses or
-         it won't properly set the message's content type correctly. Instead of application/json you get text/plain. I find this odd because
-         you can set a message converter on the inbound gateway but not the outbound one.  Using a JSON transformer in the publishing
-         flow does what we expect right up until publication to AMQP.  At that point, things get messed up and text/plain is used
-         unless you set the converter on the AMQP template.  This might be ok if you always user JSON but what if you want to do
-         both JSON and XML?  Do you need a separate template for each format?
-    -->
-    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" message-converter="messageConverter"/>
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory"/>
     <rabbit:admin connection-factory="connectionFactory" />
     <rabbit:queue name="si.test.queue" />
     <rabbit:direct-exchange name="si.test.exchange">

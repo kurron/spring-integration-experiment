@@ -1,6 +1,7 @@
 package org.kurron.hello;
 
 import java.util.Random;
+import org.springframework.integration.Message;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,13 +24,12 @@ public class Publisher
     {
         for( int i = 0; i < 50; i++ )
         {
-            final RequestObject request = new RequestObject();
-            request.setMessage( Integer.toHexString( theRandom.nextInt( Integer.MAX_VALUE ) ).toUpperCase() );
-            System.out.println( "To AMQP: " + request );
             byte[] buffer = new byte[theRandom.nextInt( 1024 )];
             theRandom.nextBytes( buffer );
-            final ResponseObject response = theService.publishWithHeader( request, Long.toHexString( System.currentTimeMillis() ).toUpperCase() );
-            System.out.println( "From AMQP: " + response );
+            System.out.println( "To AMQP: " + buffer.length );
+            final byte[] response = theService.publishWithHeader( buffer, Long.toHexString( System.currentTimeMillis() ).toUpperCase() );
+            System.out.println( "From AMQP: " + response.length );
+            System.out.println();
             Thread.sleep( theRandom.nextInt( 1000 ) );
         }
     }

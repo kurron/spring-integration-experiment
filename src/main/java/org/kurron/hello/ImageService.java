@@ -15,11 +15,9 @@ import org.springframework.integration.support.MessageBuilder;
 public class ImageService
 {
     @ServiceActivator
-    public ResponseObject echo( final RequestObject request, @Header( "logan" ) final String header )
+    public Message<byte[]> processImage( final byte[] payload, @Header( "logan" ) final String header )
     {
-        final ResponseObject response = new ResponseObject();
-        response.setId( header );
-        response.setMessage( request.getMessage() );
-        return response;
+        System.err.println( "logan = " + header );
+        return MessageBuilder.withPayload( payload ).setHeader( "logan", header ).build();
     }
 }
