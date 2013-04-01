@@ -1,6 +1,7 @@
 package org.kurron.hello;
 
 import org.springframework.integration.Message;
+import org.springframework.integration.annotation.Header;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.support.MessageBuilder;
 
@@ -14,9 +15,11 @@ import org.springframework.integration.support.MessageBuilder;
 public class ImageService
 {
     @ServiceActivator
-    public Message<byte[]> echo( final Message<byte[]> request )
+    public ResponseObject echo( final RequestObject request, @Header( "logan" ) final String header )
     {
-        System.out.println( "logan = " + request.getHeaders().get( "logan" ) );
-        return MessageBuilder.withPayload( request.getPayload() ).build();
+        final ResponseObject response = new ResponseObject();
+        response.setId( header );
+        response.setMessage( request.getMessage() );
+        return response;
     }
 }

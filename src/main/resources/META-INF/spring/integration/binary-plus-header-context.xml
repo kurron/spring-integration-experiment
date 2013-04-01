@@ -15,7 +15,7 @@
     <beans:bean id="automatedPublisher" class="org.kurron.hello.Publisher" lazy-init="false">
         <beans:constructor-arg>
             <gateway service-interface="org.kurron.hello.PublishingService" default-request-channel="toRabbit" default-reply-channel="rabbitReply">
-                <method name="publishBytes"/>
+                <method name="publish"/>
             </gateway>
         </beans:constructor-arg>
     </beans:bean>
@@ -34,6 +34,7 @@
                               connection-factory="connectionFactory"
                               error-handler="errorHandler"
                               concurrent-consumers="1"
+                              message-converter="messageConverter"
                               mapped-request-headers="*"/>
     <service-activator id="pingServiceActivator"
                        input-channel="fromRabbit"
@@ -42,6 +43,7 @@
     </service-activator>
 
     <!-- Infrastructure -->
+    <beans:bean id="messageConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter"/>
     <beans:bean id="errorHandler" class="org.kurron.hello.SimpleErrorHandler"/>
     <rabbit:connection-factory id="connectionFactory"/>
 <!--
@@ -55,7 +57,7 @@
          unless you set the converter on the AMQP template.  This might be ok if you always user JSON but what if you want to do
          both JSON and XML?  Do you need a separate template for each format?
     -->
-    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory"/>
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" message-converter="messageConverter"/>
     <rabbit:admin connection-factory="connectionFactory" />
     <rabbit:queue name="si.test.queue" />
     <rabbit:direct-exchange name="si.test.exchange">

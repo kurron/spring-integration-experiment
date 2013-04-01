@@ -13,6 +13,5 @@ import org.springframework.integration.annotation.Header;
 public interface PublishingService
 {
     ResponseObject publish( final RequestObject request );
-
-    byte[] publishBytes( final byte[] buffer, @Header( "logan" ) final String header );
+    ResponseObject publishWithHeader( final RequestObject request, @Header( "logan" ) final String header );
 }
