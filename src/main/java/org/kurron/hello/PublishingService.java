@@ -14,5 +14,5 @@ public interface PublishingService
 {
     ResponseObject publish( final RequestObject request );
 
-    byte[] publishBytes( final byte[] buffer );
+    byte[] publishBytes( final byte[] buffer, @Header( "logan" ) final String header );
 }

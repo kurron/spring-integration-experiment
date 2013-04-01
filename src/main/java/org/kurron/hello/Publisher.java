@@ -28,7 +28,7 @@ public class Publisher
             System.out.println( "To AMQP: " + request );
             byte[] buffer = new byte[theRandom.nextInt( 1024 )];
             theRandom.nextBytes( buffer );
-            final byte[] response = theService.publishBytes( buffer );
+            final byte[] response = theService.publishBytes( buffer, Long.toHexString( System.currentTimeMillis() ).toUpperCase() );
             System.out.println( "From AMQP: " + response.length );
             Thread.sleep( theRandom.nextInt( 1000 ) );
         }

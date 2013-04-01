@@ -15,9 +15,7 @@
     <beans:bean id="automatedPublisher" class="org.kurron.hello.Publisher" lazy-init="false">
         <beans:constructor-arg>
             <gateway service-interface="org.kurron.hello.PublishingService" default-request-channel="toRabbit" default-reply-channel="rabbitReply">
-                <method name="publishBytes">
-                    <header name="logan" value="devan"/>
-                </method>
+                <method name="publishBytes"/>
             </gateway>
         </beans:constructor-arg>
     </beans:bean>
