@@ -16,7 +16,7 @@ public class ImageService
     @ServiceActivator
     public Message<byte[]> echo( final Message<byte[]> request )
     {
-        System.out.println( "Length = " + request.getPayload().length );
+        System.out.println( "logan = " + request.getHeaders().get( "logan" ) );
         return MessageBuilder.withPayload( request.getPayload() ).build();
     }
 }

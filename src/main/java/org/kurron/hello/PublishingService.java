@@ -1,5 +1,8 @@
 package org.kurron.hello;
 
+import org.springframework.integration.annotation.Gateway;
+import org.springframework.integration.annotation.Header;
+
 /**
  * Created with IntelliJ IDEA.
  * User: ron
@@ -10,5 +13,6 @@ package org.kurron.hello;
 public interface PublishingService
 {
     ResponseObject publish( final RequestObject request );
+
     byte[] publishBytes( final byte[] buffer );
 }
