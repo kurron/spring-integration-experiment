@@ -18,7 +18,7 @@ public class ImageService
     public Message<byte[]> processImage( final byte[] payload, @Header( "logan" ) final String header )
     {
         System.err.println( "logan = " + header );
-        if ( 0 == payload.length % 2 )
+        if ( 0 == payload.length % 10 )
         {
             throw new IllegalArgumentException( "Forced to fail." );
         }

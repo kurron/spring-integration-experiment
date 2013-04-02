@@ -1,5 +1,6 @@
 package org.kurron.hello;
 
+import java.util.concurrent.Future;
 import org.springframework.integration.annotation.Gateway;
 import org.springframework.integration.annotation.Header;
 
@@ -12,5 +13,5 @@ import org.springframework.integration.annotation.Header;
  */
 public interface PublishingService
 {
-    byte[] publishWithHeader( final byte[] request, @Header( "logan" ) final String header );
+    Future<byte[]> publishWithHeader( final byte[] request, @Header( "logan" ) final String header );
 }

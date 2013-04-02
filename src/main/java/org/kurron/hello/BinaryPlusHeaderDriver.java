@@ -13,7 +13,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class BinaryPlusHeaderDriver
 {
 
-    public static void main( final String[] args ) throws InterruptedException
+    public static void main( final String[] args ) throws Exception
     {
         final AbstractApplicationContext context = new ClassPathXmlApplicationContext( "/META-INF/spring/integration/binary-plus-header-context.xml", BinaryPlusHeaderDriver.class );
         final Publisher bean = context.getBean( "automatedPublisher", Publisher.class );

@@ -12,10 +12,12 @@
     <!-- from automated publisher to request channel to gateway to RabbitMQ to reply channel back to publisher (blocking call) -->
     <channel id="toRabbit"/>
     <channel id="rabbitReply"/>
-    <channel id="toRabbitErrors"/>
+    <channel id="gatewayErrors"/>
     <beans:bean id="automatedPublisher" class="org.kurron.hello.Publisher" lazy-init="false">
         <beans:constructor-arg>
-            <gateway service-interface="org.kurron.hello.PublishingService" default-request-channel="toRabbit" default-reply-channel="rabbitReply">
+            <gateway service-interface="org.kurron.hello.PublishingService"
+                     default-request-channel="toRabbit"
+                     default-reply-channel="rabbitReply">
                 <method name="publish"/>
             </gateway>
         </beans:constructor-arg>
@@ -28,7 +30,7 @@
                                mapped-request-headers="*"/>
 
     <!-- happy path goes like this RabbitMQ -> inboundGateway -> fromRabbit ->  imageServiceActivator -> backToRabbit -> inboundGateway -> RabbitMQ-->
-    <!-- happy path goes like this RabbitMQ -> inboundGateway -> fromRabbit ->  imageServiceActivator -> serviceActivatorErrors -> transformer -> backToRabbit -> inboundGateway -> RabbitMQ-->
+    <!-- sad path goes like this RabbitMQ -> inboundGateway -> fromRabbit ->  imageServiceActivator -> serviceActivatorErrors -> transformer -> backToRabbit -> inboundGateway -> RabbitMQ-->
     <channel id="fromRabbit"/>
     <channel id="serviceActivatorErrors"/>
     <channel id="backToRabbit"/>
@@ -36,6 +38,7 @@
                               request-channel="fromRabbit"
                               error-channel="serviceActivatorErrors"
                               reply-channel="backToRabbit"
+                              error-handler="errorHandler"
                               queue-names="si.test.queue"
                               connection-factory="connectionFactory"
                               concurrent-consumers="1"

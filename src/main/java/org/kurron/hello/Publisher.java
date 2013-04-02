@@ -1,6 +1,10 @@
 package org.kurron.hello;
 
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.springframework.integration.Message;
 
 /**
@@ -20,14 +24,15 @@ public class Publisher
         theService = aService;
     }
 
-    public void go() throws InterruptedException
+    public void go() throws InterruptedException, TimeoutException, ExecutionException
     {
         for( int i = 0; i < 50; i++ )
         {
             byte[] buffer = new byte[theRandom.nextInt( 1024 )];
             theRandom.nextBytes( buffer );
             System.out.println( "To AMQP: " + buffer.length );
-            final byte[] response = theService.publishWithHeader( buffer, Long.toHexString( System.currentTimeMillis() ).toUpperCase() );
+            final Future<byte[]> future = theService.publishWithHeader( buffer, Long.toHexString( System.currentTimeMillis() ).toUpperCase() );
+            final byte[] response = future.get( 1, TimeUnit.SECONDS );
             System.out.println( "From AMQP: " + response.length );
             System.out.println();
             Thread.sleep( theRandom.nextInt( 1000 ) );

@@ -13,7 +13,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class TrasnformedAmqpRequestReplyDriver
 {
 
-    public static void main( final String[] args ) throws InterruptedException
+    public static void main( final String[] args ) throws Exception
     {
         final AbstractApplicationContext context = new ClassPathXmlApplicationContext( "/META-INF/spring/integration/transformed-amqp-request-reply-context.xml", TrasnformedAmqpRequestReplyDriver.class );
         final Publisher bean = context.getBean( "automatedPublisher", Publisher.class );
