@@ -31,9 +31,10 @@ public class Publisher
             byte[] buffer = new byte[theRandom.nextInt( 1024 )];
             theRandom.nextBytes( buffer );
             System.out.println( "To AMQP: " + buffer.length );
-            final Future<byte[]> future = theService.publishWithHeader( buffer, Long.toHexString( System.currentTimeMillis() ).toUpperCase() );
-            final byte[] response = future.get( 1, TimeUnit.SECONDS );
+            final Message<byte[]> message = theService.publishWithHeader( buffer, Long.toHexString( System.currentTimeMillis() ).toUpperCase() );
+            final byte[] response = message.getPayload();
             System.out.println( "From AMQP: " + response.length );
+            System.out.println( "logan: " + message.getHeaders().get( "logan" ) );
             System.out.println();
             Thread.sleep( theRandom.nextInt( 1000 ) );
         }

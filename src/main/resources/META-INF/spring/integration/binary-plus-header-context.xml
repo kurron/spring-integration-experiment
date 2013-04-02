@@ -32,7 +32,8 @@
                                exchange-name="si.test.exchange"
                                routing-key="si.test.binding"
                                reply-channel="rabbitReply"
-                               mapped-request-headers="*"/>
+                               mapped-request-headers="*"
+                               mapped-reply-headers="*"/>
 
     <!-- happy path goes like this RabbitMQ -> inboundGateway -> fromRabbit ->  imageServiceActivator -> backToRabbit -> inboundGateway -> RabbitMQ-->
     <!-- sad path goes like this RabbitMQ -> inboundGateway -> fromRabbit ->  imageServiceActivator -> serviceActivatorErrors -> transformer -> backToRabbit -> inboundGateway -> RabbitMQ-->
@@ -47,7 +48,8 @@
                               queue-names="si.test.queue"
                               connection-factory="connectionFactory"
                               concurrent-consumers="1"
-                              mapped-request-headers="*"/>
+                              mapped-request-headers="*"
+                              mapped-reply-headers="*"/>
     <service-activator id="imageServiceActivator"
                        input-channel="fromRabbit"
                        requires-reply="true">
