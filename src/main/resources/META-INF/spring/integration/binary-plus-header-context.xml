@@ -12,6 +12,7 @@
     <!-- from automated publisher to request channel to gateway to RabbitMQ to reply channel back to publisher (blocking call) -->
     <channel id="toRabbit"/>
     <channel id="rabbitReply"/>
+    <channel id="toRabbitErrors"/>
     <beans:bean id="automatedPublisher" class="org.kurron.hello.Publisher" lazy-init="false">
         <beans:constructor-arg>
             <gateway service-interface="org.kurron.hello.PublishingService" default-request-channel="toRabbit" default-reply-channel="rabbitReply">
@@ -26,20 +27,27 @@
                                reply-channel="rabbitReply"
                                mapped-request-headers="*"/>
 
-    <!-- from RabbitMQ to channel to service -->
+    <!-- happy path goes like this RabbitMQ -> inboundGateway -> fromRabbit ->  imageServiceActivator -> backToRabbit -> inboundGateway -> RabbitMQ-->
+    <!-- happy path goes like this RabbitMQ -> inboundGateway -> fromRabbit ->  imageServiceActivator -> serviceActivatorErrors -> transformer -> backToRabbit -> inboundGateway -> RabbitMQ-->
     <channel id="fromRabbit"/>
+    <channel id="serviceActivatorErrors"/>
+    <channel id="backToRabbit"/>
     <int-amqp:inbound-gateway id="inboundGateway"
                               request-channel="fromRabbit"
+                              error-channel="serviceActivatorErrors"
+                              reply-channel="backToRabbit"
                               queue-names="si.test.queue"
                               connection-factory="connectionFactory"
-                              error-handler="errorHandler"
                               concurrent-consumers="1"
                               mapped-request-headers="*"/>
-    <service-activator id="pingServiceActivator"
+    <service-activator id="imageServiceActivator"
                        input-channel="fromRabbit"
                        requires-reply="true">
         <beans:bean class="org.kurron.hello.ImageService"/>
     </service-activator>
+    <transformer input-channel="serviceActivatorErrors" output-channel="backToRabbit">
+        <beans:bean class="org.kurron.hello.ErrorTransformer"/>
+    </transformer>
 
     <!-- Infrastructure -->
     <beans:bean id="errorHandler" class="org.kurron.hello.SimpleErrorHandler"/>
